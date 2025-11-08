@@ -11,6 +11,7 @@ use CubeSystems\ApiClient\Client\Contracts\Response;
 use CubeSystems\ApiClient\Client\Plugs\PlugManager;
 use CubeSystems\ApiClient\Client\Services\AbstractSoapService;
 use CubeSystems\ApiClient\Events\ApiCalled;
+use CubeSystems\ApiClient\Client\Responses\SoapResponseDecorator;
 
 abstract class AbstractSoapMethod extends AbstractMethod
 {
@@ -32,6 +33,8 @@ abstract class AbstractSoapMethod extends AbstractMethod
             $payload->toArray()
         );
 
+        $extendedResponse = app(SoapResponseDecorator::class, ['response' => $rawResponse]);
+
         $microtimeTo = microtime(true);
 
         $rawDataArray = $this->getRawDataArray($rawResponse);
@@ -40,7 +43,7 @@ abstract class AbstractSoapMethod extends AbstractMethod
 
         $this->dispatchServiceCalledEvent(
             $payload,
-            $rawResponse,
+            $extendedResponse,
             $response,
             $microtimeFrom,
             $microtimeTo
@@ -51,14 +54,14 @@ abstract class AbstractSoapMethod extends AbstractMethod
 
     private function dispatchServiceCalledEvent(
         Payload $payload,
-        RawResponse $rawResponse,
+        SoapResponseDecorator $rawResponse,
         Response $response,
         float $microtimeFrom,
         float $microtimeTo
     ): void {
 
         $stats = $this->makeCallStats(
-            $rawResponse->transferStats,
+            $rawResponse->getTransferStats(),
             $microtimeFrom,
             $microtimeTo
         );
