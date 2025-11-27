@@ -22,7 +22,7 @@
         "ext-intl": "*",
         "ext-soap": "*",
         "ext-xsl": "*",
-        "codedredd/laravel-soap": "^3.0",
+        "codedredd/laravel-soap": "^3.3",
         "illuminate/contracts": "^9.0",
         "nesbot/carbon": "^2.66",
         "spatie/laravel-package-tools": "^1.14.0"
